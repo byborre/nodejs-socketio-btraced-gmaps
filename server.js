@@ -10,6 +10,7 @@ app.use(function(req, res, next){
    req.on('data', function(chunk){ data += chunk})
    req.on('end', function(){
       req.rawBody = data;
+      console.log(data);
       next();
    })
 });
@@ -65,7 +66,7 @@ function transform(data, response) {
   } else {
     var result = {};
     transformHeader(data, result);
-    response.points.push(transformPoint(point, result));
+    response.points.push(transformPoint(data.bwiredtravel.travel.point, result));
     points.push(result);
   }
   return points;
@@ -91,17 +92,15 @@ app.get('/', function(req, res) {
 app.post('/api/gps', function(req, res) {
   var response = {};
   parser.parseString(req.rawBody, function (err, result) {
-        transform(result, response).forEach(function(point) {
-          db.collection('points').insert(point, function(err) {
-            if (err) {
-              return console.log('inser error', err);
-            }
-            sendLatestCoordinates();
-            console.log(response);
-            res.send(JSON.stringify(response));
-          });
-        });
+    db.collection('points').insert(transform(result, response), function(err) {
+      if (err) {
+        return console.log('insert error', err);
+      }
+      sendLatestCoordinates();
     });
+    console.log(response);
+    res.send(JSON.stringify(response));
+  });
 });
 
 io.sockets.on('connection', function (socket) {
