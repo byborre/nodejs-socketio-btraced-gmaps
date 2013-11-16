@@ -1,0 +1,14 @@
+{
+  "name": "nodejs-socketio-btraced-gmaps",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "socket.io": "~0.9.16",
+    "mongoskin": "~0.6.0",
+    "express": "~3.4.4",
+    "xml2js": "~0.2.8"
+  }
+}
