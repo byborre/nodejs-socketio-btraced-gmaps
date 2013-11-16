@@ -10,7 +10,6 @@ app.use(function(req, res, next){
    req.on('data', function(chunk){ data += chunk})
    req.on('end', function(){
       req.rawBody = data;
-      console.log(data);
       next();
    })
 });
