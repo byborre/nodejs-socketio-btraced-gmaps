@@ -1,23 +1,36 @@
 var xml2js = require('xml2js');
 var db = require('mongoskin').db('localhost:27017/btraced?auto_reconnect', {safe: true});
 var parser = new xml2js.Parser({explicitArray : false});
-
 var express = require('express');
 var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io').listen(server);
 
-app.use(function(req, res, next){
-   var data = "";
-   req.on('data', function(chunk){ data += chunk})
-   req.on('end', function(){
-      req.rawBody = data;
-      next();
-   })
+app.use(function(req, res, next) {
+  var data = "";
+  req.on('data', function(chunk) { 
+    data += chunk}
+  )
+  req.on('end', function() {
+    req.rawBody = data;
+    next();
+  })
 });
 
 app.use(express.logger('dev'));
 
-var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
+db.collection('points').ensureIndex([['geo', '2dsphere']], false, function (err, replies) {
+  if (err) {
+    console.log(err);
+  }
+});
+
+db.collection('points').ensureIndex('date', false, function (err, replies) {
+  if (err) {
+    console.log(err);
+  }
+});
+
 
 function transformHeader(data, result) {
   result.id = parseInt(data.bwiredtravel.travel.id);
@@ -44,6 +57,11 @@ function transformPoint(point, result) {
   result.tdist = parseFloat(point.tdist);
   result.rdist = parseFloat(point.rdist);
   result.ttime = parseFloat(point.ttime);
+  result.geo = {
+    type: 'Point',
+    coordinates: [result.lon, result.lat]
+  };
+
   return result.pointId;
 }
 
