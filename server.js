@@ -3,17 +3,62 @@ var xml2js = require('xml2js');
 var parser = new xml2js.Parser({explicitArray : false});
 var express = require('express');
 var app = express();
-var mongo = require('mongoskin');
+// var mongo = require('mongoskin');
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var dotenv         = require('dotenv');
+
+var MongoClient = require('mongodb').MongoClient,
+  assert = require('assert');
+
 dotenv.load(); //use env files
 
 
 console.log('AUTH:',process.env.MONGODB_URI);
 
 // var db = mongo.db(process.env.MONGODB_URI, {safe: true});
-var db = mongo.db(process.env.MONGODB_URI, {w:1});
+// var db = mongo.db(process.env.MONGODB_URI, {w:1});
+
+
+var db;
+
+MongoClient.connect(mongourl, function(err, thisdb) {
+  assert.equal(null, err);
+  console.log("Connected correctly to mongo DB server");
+
+  db=thisdb;
+
+  var collections = {
+    // 'pings': db.collection('pings')
+    'points': db.collection('points')
+  };
+
+
+  db.collection('points').ensureIndex([['geo', '2dsphere']], false, function (err, replies) {
+    if (err) {
+      console.log(err);
+    }
+  });
+
+  db.collection('points').ensureIndex('date', false, function (err, replies) {
+    if (err) {
+      console.log(err);
+    }
+  });
+
+
+  io.on('connection', function(socket) {    
+    collections.points.find({}).sort({_id: -1}).limit(300).toArray(function(err, docs) {
+      assert.equal(err, null);
+      socket.emit('positions', {
+        positions: docs
+      });
+
+    });
+  });
+
+
+
 
 app.use(function(req, res, next) {
   var data = "";
@@ -28,17 +73,17 @@ app.use(function(req, res, next) {
 
 app.use(express.logger('dev'));
 
-db.collection('points').ensureIndex([['geo', '2dsphere']], false, function (err, replies) {
-  if (err) {
-    console.log(err);
-  }
-});
+// db.collection('points').ensureIndex([['geo', '2dsphere']], false, function (err, replies) {
+//   if (err) {
+//     console.log(err);
+//   }
+// });
 
-db.collection('points').ensureIndex('date', false, function (err, replies) {
-  if (err) {
-    console.log(err);
-  }
-});
+// db.collection('points').ensureIndex('date', false, function (err, replies) {
+//   if (err) {
+//     console.log(err);
+//   }
+// });
 
 
 function transformHeader(data, result) {
