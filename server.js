@@ -8,11 +8,11 @@ var io = require('socket.io').listen(server);
 var dotenv         = require('dotenv');
 
 
-dotenv.load(); //use env files
+dotenv.load(); //use env
 
 app.use(function(req, res, next) {
   var data = "";
-  req.on('data', function(chunk) { 
+  req.on('data', function(chunk) {
     data += chunk}
   )
   req.on('end', function() {
@@ -71,7 +71,7 @@ function transformPoint(point, result) {
 
 function transform(data, response) {
   var points = [];
-  
+
   response.id = 0;
   response.tripid = parseInt(data.bwiredtravel.travel.id);
   response.points = [];
@@ -82,7 +82,7 @@ function transform(data, response) {
       var result = {};
       transformHeader(data, result);
       response.points.push(transformPoint(point, result));
-      points.push(result);  
+      points.push(result);
     });
   } else {
     var result = {};
@@ -96,8 +96,8 @@ function transform(data, response) {
 function sendLatestCoordinates() {
   db.collection('points').find({}, {limit: 1, sort: {date: -1}}).toArray(function (err, items) {
     if (items.length >= 1) {
-      io.sockets.emit('location', { 
-        lat: items[0].lat, 
+      io.sockets.emit('location', {
+        lat: items[0].lat,
         lon: items[0].lon
       });
     }
