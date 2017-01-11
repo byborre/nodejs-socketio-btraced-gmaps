@@ -1,14 +1,14 @@
 var xml2js = require('xml2js');
-var db = require('mongoskin').db('localhost:27017/btraced?auto_reconnect', {safe: true});
+
 var parser = new xml2js.Parser({explicitArray : false});
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var dotenv         = require('dotenv');
-
-
 dotenv.load(); //use env files
+
+var db = require('mongoskin').db(process.env.MONGODB_URI, {safe: true});
 
 app.use(function(req, res, next) {
   var data = "";
@@ -107,6 +107,8 @@ function sendLatestCoordinates() {
 
 var PORT=process.env.PORT||3000;
 server.listen(PORT);
+
+console.log('SERVER LISTENING ON ',PORT);
 
 app.get('/', function(req, res) {
   res.sendfile(__dirname + '/index.html');
