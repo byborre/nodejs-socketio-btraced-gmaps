@@ -22,9 +22,22 @@
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
 
+        var car = {
+          url: 'https://paris.byborre.com/car.png',
+          size: new google.maps.Size(54, 128),
+          scaledSize: new google.maps.Size(27, 64),
+          // The origin for this image is (0, 0).
+          origin: new google.maps.Point(0, 0),
+          // The anchor for this image is the base of the flagpole at (0, 32).
+          anchor: new google.maps.Point(0, 32),
+          // rotation: angleDegrees //this is how to rotate the pointer
+        };
+
         var socket = io.connect('/');
         socket.on('location', function (data) {
           console.log(data);
+          car.rotation=data.course;
+          marker.icon=car;
           marker.setPosition(new google.maps.LatLng(data.lat, data.lon));
           circle.setCenter(marker.getPosition());
           map.setCenter(marker.getPosition());
@@ -33,10 +46,19 @@
         function initialize() {
           map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
+
           marker = new google.maps.Marker({
-              map: map,
-              title: 'I am here'
+            // position: latlng,
+            animation: google.maps.Animation.DROP,
+            // icon: 'car.png',
+            icon: car,
+            map: map
           });
+
+          // marker = new google.maps.Marker({
+          //     map: map,
+          //     title: 'I am here'
+          // });
 
           circle = new google.maps.Circle({
             map: map,
