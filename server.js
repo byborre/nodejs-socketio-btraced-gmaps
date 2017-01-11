@@ -57,7 +57,7 @@ MongoClient.connect(mongourl, function(err, thisdb) {
     });
   });
 
-
+});
 
 
 app.use(function(req, res, next) {
