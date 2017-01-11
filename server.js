@@ -3,12 +3,14 @@ var xml2js = require('xml2js');
 var parser = new xml2js.Parser({explicitArray : false});
 var express = require('express');
 var app = express();
+var mongo = require('mongoskin');
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var dotenv         = require('dotenv');
 dotenv.load(); //use env files
 
-var db = require('mongoskin').db(process.env.MONGODB_URI, {safe: true});
+// var db = mongo.db(process.env.MONGODB_URI, {safe: true});
+var db = mongo.db(process.env.MONGODB_URI);
 
 app.use(function(req, res, next) {
   var data = "";
