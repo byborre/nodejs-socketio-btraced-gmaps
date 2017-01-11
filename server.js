@@ -9,6 +9,9 @@ var io = require('socket.io').listen(server);
 var dotenv         = require('dotenv');
 dotenv.load(); //use env files
 
+
+console.log('AUTH:',process.env.MONGODB_URI);
+
 // var db = mongo.db(process.env.MONGODB_URI, {safe: true});
 var db = mongo.db(process.env.MONGODB_URI, {w:1});
 
