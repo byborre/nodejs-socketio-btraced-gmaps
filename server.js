@@ -10,7 +10,7 @@ var dotenv         = require('dotenv');
 dotenv.load(); //use env files
 
 // var db = mongo.db(process.env.MONGODB_URI, {safe: true});
-var db = mongo.db(process.env.MONGODB_URI);
+var db = mongo.db(process.env.MONGODB_URI, {w:1});
 
 app.use(function(req, res, next) {
   var data = "";
