@@ -37,10 +37,10 @@
         socket.on('location', function (data) {
           console.log(data);
           // car.rotation=data.course;
-          car.url='https://paris.byborre.com/car/car_'+data.course+'.png';
+          car.url='https://paris.byborre.com/car/car_'+Math.round(data.course)+'.png';
           marker.icon=car;
 
-          console.log(marker);
+          // console.log(marker);
           marker.setPosition(new google.maps.LatLng(data.lat, data.lon));
           circle.setCenter(marker.getPosition());
           map.setCenter(marker.getPosition());
