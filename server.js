@@ -14,7 +14,7 @@ var MongoClient = require('mongodb').MongoClient,
 dotenv.load(); //use env files
 
 
-console.log('AUTH:',process.env.MONGODB_URI);
+// console.log('AUTH:',process.env.MONGODB_URI);
 
 // var db = mongo.db(process.env.MONGODB_URI, {safe: true});
 // var db = mongo.db(process.env.MONGODB_URI, {w:1});
@@ -22,7 +22,7 @@ console.log('AUTH:',process.env.MONGODB_URI);
 
 var db;
 
-MongoClient.connect(mongourl, function(err, thisdb) {
+MongoClient.connect(process.env.MONGODB_URI, function(err, thisdb) {
   assert.equal(null, err);
   console.log("Connected correctly to mongo DB server");
 
