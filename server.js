@@ -47,7 +47,7 @@ MongoClient.connect(process.env.MONGODB_URI, function(err, thisdb) {
   });
 
 
-  io.on('connection', function(socket) {    
+  io.on('connection', function(socket) {
     collections.points.find({}).sort({_id: -1}).limit(300).toArray(function(err, docs) {
       assert.equal(err, null);
       socket.emit('positions', {
@@ -148,7 +148,8 @@ function sendLatestCoordinates() {
     if (items.length >= 1) {
       io.sockets.emit('location', {
         lat: items[0].lat,
-        lon: items[0].lon
+        lon: items[0].lon,
+        course: items[0].course,
       });
     }
   });
