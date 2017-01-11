@@ -1,0 +1,48 @@
+
+<bwiredtravel>
+  <model>iPhone</model>
+  <devId>FFFFFFFFCBDD23D8FD2F40879473FF54876BBD55</devId>
+  <username></username>
+  <password></password>
+  <timeOffset>0</timeOffset>
+  <travel>
+    <id>1</id>
+    <getTripUrl>1</getTripUrl>    <description>13/11/2013%2023:47_trip</description>
+    <length>5.57</length>
+    <time>3</time>
+    <tpoints>2</tpoints>
+    <uplpoints>0</uplpoints>
+    <point>
+      <id>1</id>
+      <date>1384386446.799330</date>
+      <lat>+51.574023</lat>
+      <lon>-0.105750</lon>
+      <speed>-1.000000</speed>
+      <course>-1.000000</course>
+      <haccu>65.000000</haccu>
+      <bat>0.75</bat>
+      <vaccu>22.815922</vaccu>
+      <altitude>42.053471</altitude>
+      <continous>0</continous>
+      <tdist>0.00</tdist>
+      <rdist>0.00</rdist>
+      <ttime>0</ttime>
+    </point>
+    <point>
+      <id>2</id>
+      <date>1384386449.817246</date>
+      <lat>+51.574003</lat>
+      <lon>-0.105824</lon>
+      <speed>-1.000000</speed>
+      <course>-1.000000</course>
+      <haccu>65.000000</haccu>
+      <bat>0.75</bat>
+      <vaccu>13.960747</vaccu>
+      <altitude>42.490585</altitude>
+      <continous>1</continous>
+      <tdist>5.57</tdist>
+      <rdist>5.57</rdist>
+      <ttime>3</ttime>
+    </point>
+  </travel>
+</bwiredtravel>
