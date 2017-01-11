@@ -7,9 +7,9 @@
   },
   "dependencies": {
     "dotenv": "^4.0.0",
-    "express": "~3.4.4",
+    "express": "^3.4.8",
     "mongoskin": "^0.6.1",
-    "socket.io": "~0.9.16",
-    "xml2js": "~0.2.8"
+    "socket.io": "^0.9.17",
+    "xml2js": "^0.2.8"
   }
 }
