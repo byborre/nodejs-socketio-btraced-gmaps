@@ -8,6 +8,8 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var dotenv         = require('dotenv');
 
+var auth = require('basic-auth')
+
 var MongoClient = require('mongodb').MongoClient,
   assert = require('assert');
 
@@ -155,6 +157,26 @@ function sendLatestCoordinates() {
 }
 
 
+function doAuth (req, res, next) {
+  function unauthorized(res) {
+    res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+    return res.sendStatus(401);
+  };
+
+  var user = basicAuth(req);
+
+  if (!user || !user.name || !user.pass) {
+    return unauthorized(res);
+  };
+
+  if (user.name === process.env.ADMIN_USER && user.pass === process.env.ADMIN_PASS) {
+    return next();
+  } else {
+    return unauthorized(res);
+  };
+};
+
+
 var PORT=process.env.PORT||3000;
 server.listen(PORT);
 
@@ -164,7 +186,7 @@ app.get('/', function(req, res) {
   res.sendfile(__dirname + '/index.html');
 });
 
-app.post('/api/gps', function(req, res) {
+app.post('/api/gps', doAuth, function(req, res) {
   var response = {};
   parser.parseString(req.rawBody, function (err, result) {
     db.collection('points').insert(transform(result, response), function(err) {
