@@ -8,7 +8,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var dotenv         = require('dotenv');
 
-var auth = require('basic-auth')
+var basicAuth = require('basic-auth')
 
 var MongoClient = require('mongodb').MongoClient,
   assert = require('assert');
