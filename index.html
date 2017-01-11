@@ -30,14 +30,16 @@
           origin: new google.maps.Point(0, 0),
           // The anchor for this image is the base of the flagpole at (0, 32).
           anchor: new google.maps.Point(0, 32),
-          rotation: 45
+          // rotation: 45
         };
 
         var socket = io.connect('/');
         socket.on('location', function (data) {
           console.log(data);
-          car.rotation=data.course;
+          // car.rotation=data.course;
+          car.url='https://paris.byborre.com/car/car_'+data.course+'.png';
           marker.icon=car;
+
           console.log(marker);
           marker.setPosition(new google.maps.LatLng(data.lat, data.lon));
           circle.setCenter(marker.getPosition());
