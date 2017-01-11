@@ -189,6 +189,9 @@ app.get('/', function(req, res) {
 app.post('/api/gps', doAuth, function(req, res) {
   var response = {};
   parser.parseString(req.rawBody, function (err, result) {
+
+    console.log('Incoming: ',result);
+
     db.collection('points').insert(transform(result, response), function(err) {
       if (err) {
         return console.log('insert error', err);
