@@ -186,7 +186,7 @@ app.get('/', function(req, res) {
   res.sendfile(__dirname + '/index.html');
 });
 
-app.post('/api/gps', doAuth, function(req, res) {
+app.post('/api/gps', function(req, res) {
   var response = {};
   parser.parseString(req.rawBody, function (err, result) {
 
