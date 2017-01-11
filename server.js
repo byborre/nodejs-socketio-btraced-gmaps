@@ -5,6 +5,10 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
+var dotenv         = require('dotenv');
+
+
+dotenv.load(); //use env files
 
 app.use(function(req, res, next) {
   var data = "";
