@@ -8,7 +8,7 @@ var io = require('socket.io').listen(server);
 var dotenv         = require('dotenv');
 
 
-dotenv.load(); //use env
+dotenv.load(); //use env files
 
 app.use(function(req, res, next) {
   var data = "";
