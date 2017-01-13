@@ -9,8 +9,13 @@
           margin: 0px;
           padding: 0px
         }
+
+      .phoney {
+        background: #FF0000;
+      }
       </style>
       <script src="/socket.io/socket.io.js"></script>
+      <script src="https://paris.byborre.com/js/infobubble-compiled.js"></script>
       <!--script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script-->
       <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuo3MWskniRrU6bl7HufLLMTLDNCFH-kw"></script>
       <script>
@@ -246,16 +251,36 @@
             map: map
           });
 
+
+
+        var infoBubble = new InfoBubble({
+          map: map,
+          content: '<div class="phoneytext">CALL BYBORRE</div>',
+          position: new google.maps.LatLng(-35, 151),
+          shadowStyle: 0,
+          padding: 20,
+          backgroundColor: '#ff0000',
+          borderRadius: 4,
+          arrowSize: 10,
+          borderWidth: 1,
+          borderColor: '#ff0000',
+          disableAutoPan: true,
+          hideCloseButton: true,
+          arrowPosition: 30,
+          backgroundClassName: 'phoney',
+          arrowStyle: 0
+        });
+        infoBubble.open(map, marker);
           // marker = new google.maps.Marker({
           //     map: map,
           //     title: 'I am here'
           // });
 
-          circle = new google.maps.Circle({
-            map: map,
-            radius: 1000,
-            fillColor: '#AA0000'
-          });
+          // circle = new google.maps.Circle({
+          //   map: map,
+          //   radius: 1000,
+          //   fillColor: '#AA0000'
+          // });
         }
 
         google.maps.event.addDomListener(window, 'load', initialize);
