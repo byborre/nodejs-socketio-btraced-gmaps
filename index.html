@@ -43,29 +43,15 @@
           size: new google.maps.Size(200, 200),
           scaledSize: new google.maps.Size(100, 100),
           // The origin for this image is (0, 0).
-          origin: new google.maps.Point(0, 0),
+          // origin: new google.maps.Point(0, 0),
           // The anchor for this image is the base of the flagpole at (0, 32).
           anchor: new google.maps.Point(50, 50),
           // rotation: 45
         };
 
-        var socket = io.connect('/');
-        socket.on('location', function (data) {
-          console.log(data);
-          // car.rotation=data.course;
-          car.url='https://paris.byborre.com/car/car_'+Math.round(data.course)+'.png';
-          marker.icon=car;
-
-          // console.log(marker);
-          marker.setPosition(new google.maps.LatLng(data.lat, data.lon));
-          // circle.setCenter(marker.getPosition());
-          map.setCenter(marker.getPosition());
-        });
 
         function initialize() {
           map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
-
           marker = new google.maps.Marker({
             // position: latlng,
             animation: google.maps.Animation.DROP,
@@ -79,16 +65,15 @@
         var infoBubble = new InfoBubble({
           map: map,
           content: '<div class="phoneytext"><i class="fa fa-phone"></i> &nbsp; CALL BYBORRE NOW</div>',
-          position: new google.maps.LatLng(-50, 151),
+          // position: new google.maps.LatLng(-50, 151),
           shadowStyle: 0,
           padding: 15,
           backgroundColor: '#ff0000',
           borderRadius: 0,
           arrowSize: 10,
-
           borderWidth: 1,
           borderColor: '#ff0000',
-          disableAutoPan: true,
+          // disableAutoPan: true,
           hideCloseButton: true,
           arrowPosition: 50,
           backgroundClassName: 'phoney',
@@ -98,7 +83,20 @@
 
         marker.addListener('click', function() {
           infoBubble.open(map, marker);
-          console.log('Opened');
+          // console.log('Opened');
+        });
+
+        var socket = io.connect('/');
+        socket.on('location', function (data) {
+          console.log(data);
+          // car.rotation=data.course;
+          car.url='https://paris.byborre.com/car/car_'+Math.round(data.course)+'.png';
+          marker.icon=car;
+
+          // console.log(marker);
+          marker.setPosition(new google.maps.LatLng(data.lat, data.lon));
+          // circle.setCenter(marker.getPosition());
+          map.setCenter(marker.getPosition());
         });
           // marker = new google.maps.Marker({
           //     map: map,
