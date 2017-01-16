@@ -20,6 +20,11 @@
         /*// marginTop: '50px',*/
         /*padding: 15px;*/
       }
+
+      .phoneytext a {
+        text-decoration: none;
+        color: #fff;
+      }
       </style>
       <script src="/socket.io/socket.io.js"></script>
       <script src="https://paris.byborre.com/js/infobubble-compiled.js"></script>
@@ -64,7 +69,7 @@
 
         var infoBubble = new InfoBubble({
           map: map,
-          content: '<div class="phoneytext"><i class="fa fa-phone"></i> &nbsp; CALL BYBORRE NOW</div>',
+          content: '<div class="phoneytext"><A HREF="tel:+31646814360" class="btn btn-alert belknop"><i class="fa fa-phone"></i> &nbsp; CALL BYBORRE NOW</A></div>',
           // position: new google.maps.LatLng(-50, 151),
           shadowStyle: 0,
           padding: 15,
@@ -80,10 +85,14 @@
           arrowStyle: 0
         });
         // infoBubble.open(map, marker);
-
+        var bubbleshow=false;
         marker.addListener('click', function() {
-          infoBubble.open(map, marker);
+          if (!bubbleshow){
+            infoBubble.open(map, marker);
+            bubbleshow=true;
+          }
           // console.log('Opened');
+
         });
 
         var socket = io.connect('/');
