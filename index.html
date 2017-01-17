@@ -107,6 +107,34 @@
           // circle.setCenter(marker.getPosition());
           map.setCenter(marker.getPosition());
         });
+        var path=[];
+        socket.on('positions', function (data) {
+          console.log('POS:',data);
+
+            data.positions.forEach(function(item){
+              console.log(item.geo.coordinates[0], item.geo.coordinates[1]);
+              var position = new google.maps.LatLng(item.geo.coordinates[1], item.geo.coordinates[0]);
+              // console.log(position);
+              path.push(position);
+
+            // device.marker.position = position;
+
+            // device.path.getPath().push(position);
+
+            });
+            // console.log(path);
+
+            line = new google.maps.Polyline({
+              path: path,
+              geodesic: true,
+              strokeColor: '#0000FF',
+              strokeOpacity: 1.0,
+              strokeWeight: 2,
+              map: map
+            });
+            line.setMap(map);
+
+            })
           // marker = new google.maps.Marker({
           //     map: map,
           //     title: 'I am here'
