@@ -3,10 +3,15 @@ var xml2js = require('xml2js');
 var parser = new xml2js.Parser({explicitArray : false});
 var express = require('express');
 var app = express();
+var request = require('request');
 // var mongo = require('mongoskin');
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var dotenv         = require('dotenv');
+
+var cors = require('cors');
+
+// app.use(cors());//enable cors
 
 var MongoClient = require('mongodb').MongoClient,
   assert = require('assert');
@@ -187,6 +192,23 @@ app.post('/api/gps', function(req, res) {
     res.send(JSON.stringify(response));
   });
 });
+
+//Make instagram proxy so we dont have to expose API key
+app.get('/instagram', cors(), function(req, res) {
+  // res.sendfile(__dirname + '/index.html');
+  request.get('https://api.instagram.com/v1/users/self/media/recent/?access_token=32227036.f3c234e.e692f6979657454c9b75f99aeb6fbda8&').pipe(res)
+});
+
+
+// http.createServer(function (req, resp) {
+//   if (req.url === '/doodle.png') {
+//     if (req.method === 'PUT') {
+//       req.pipe(request.put('http://mysite.com/doodle.png'))
+//     } else if (req.method === 'GET' || req.method === 'HEAD') {
+//       request.get('http://mysite.com/doodle.png').pipe(resp)
+//     }
+//   }
+// })
 
 io.sockets.on('connection', function (socket) {
   sendLatestCoordinates();
