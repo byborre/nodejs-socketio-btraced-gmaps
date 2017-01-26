@@ -109,10 +109,10 @@
         });
         var path=[];
         socket.on('positions', function (data) {
-          console.log('POS:',data);
+          // console.log('POS:',data);
 
             data.positions.forEach(function(item){
-              console.log(item.geo.coordinates[0], item.geo.coordinates[1]);
+              // console.log(item.geo.coordinates[0], item.geo.coordinates[1]);
               var position = new google.maps.LatLng(item.geo.coordinates[1], item.geo.coordinates[0]);
               // console.log(position);
               path.push(position);
