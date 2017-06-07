@@ -194,10 +194,29 @@ app.post('/api/gps', function(req, res) {
   });
 });
 
-//Make instagram proxy so we dont have to expose API key
+var instacache=null;
+var instatime=0;
+
+//Make instagram proxy so we dont have to expose API key // Oops, repo is public anyway...
 app.get('/instagram', cors(), function(req, res) {
   // res.sendfile(__dirname + '/index.html');
-  request.get('https://api.instagram.com/v1/users/self/media/recent/?access_token=32227036.f3c234e.e692f6979657454c9b75f99aeb6fbda8&').pipe(res)
+  var curtime=new Date().getTime();
+  var diff=1000*60*5; //5 min
+  if (instatime > (curtime - diff) && instacache!=null){
+    res.send(instacache);
+  } else {
+    request.get('https://api.instagram.com/v1/users/self/media/recent/?access_token=32227036.f3c234e.e692f6979657454c9b75f99aeb6fbda8&', function (error, response, body) {
+      if (error){
+        console.log('Insta Error:',error);
+        return;
+      }
+      instacache=body;
+      instatime=curtime;
+      res.send(instacache);
+    });
+
+  }
+  // request.get('https://api.instagram.com/v1/users/self/media/recent/?access_token=32227036.f3c234e.e692f6979657454c9b75f99aeb6fbda8&').pipe(res)
 });
 
 
