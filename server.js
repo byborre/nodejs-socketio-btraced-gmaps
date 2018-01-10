@@ -92,6 +92,7 @@ function transformHeader(data, result) {
   result.time = data.bwiredtravel.travel.time;
   result.tpoints = data.bwiredtravel.travel.tpoints;
   result.uplpoints = data.bwiredtravel.travel.uplpoints;
+  result.user = result.bwiredtravel.username;
 }
 
 function transformPoint(point, result) {
