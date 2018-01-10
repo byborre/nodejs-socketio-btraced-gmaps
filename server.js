@@ -143,9 +143,10 @@ function transform(data, response) {
 }
 
 function sendLatestCoordinates() {
-  db.collection("points").find({}, { limit: 1, sort: { date: -1 } }).toArray(function(err, items) {
+  db.collection("points").find({ user: "byborre1" }, { limit: 1, sort: { date: -1 } }).toArray(function(err, items) {
     if (items.length >= 1) {
       io.sockets.emit("location", {
+        user: items[0].user,
         lat: items[0].lat,
         lon: items[0].lon,
         course: items[0].course
