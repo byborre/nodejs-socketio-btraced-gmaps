@@ -1,29 +1,27 @@
-var xml2js = require('xml2js');
+var xml2js = require("xml2js");
 
-var parser = new xml2js.Parser({explicitArray : false});
-var express = require('express');
+var parser = new xml2js.Parser({ explicitArray: false });
+var express = require("express");
 var app = express();
-var request = require('request');
+var request = require("request");
 // var mongo = require('mongoskin');
-var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
-var dotenv         = require('dotenv');
+var server = require("http").createServer(app);
+var io = require("socket.io").listen(server);
+var dotenv = require("dotenv");
 
-var cors = require('cors');
+var cors = require("cors");
 
 // app.use(cors());//enable cors
 
-var MongoClient = require('mongodb').MongoClient,
-  assert = require('assert');
+var MongoClient = require("mongodb").MongoClient,
+  assert = require("assert");
 
 dotenv.load(); //use env files
-
 
 // console.log('AUTH:',process.env.MONGODB_URI);
 
 // var db = mongo.db(process.env.MONGODB_URI, {safe: true});
 // var db = mongo.db(process.env.MONGODB_URI, {w:1});
-
 
 var db;
 
@@ -31,53 +29,48 @@ MongoClient.connect(process.env.MONGODB_URI, function(err, thisdb) {
   assert.equal(null, err);
   console.log("Connected correctly to mongo DB server");
 
-  db=thisdb;
+  db = thisdb;
 
   var collections = {
     // 'pings': db.collection('pings')
-    'points': db.collection('points')
+    points: db.collection("points")
   };
 
-
-  db.collection('points').ensureIndex([['geo', '2dsphere']], false, function (err, replies) {
+  db.collection("points").ensureIndex([["geo", "2dsphere"]], false, function(err, replies) {
     if (err) {
       console.log(err);
     }
   });
 
-  db.collection('points').ensureIndex('date', false, function (err, replies) {
+  db.collection("points").ensureIndex("date", false, function(err, replies) {
     if (err) {
       console.log(err);
     }
   });
 
-
-  io.on('connection', function(socket) {
+  io.on("connection", function(socket) {
     //Send on connect
-    collections.points.find({}).sort({_id: -1}).limit(3000).toArray(function(err, docs) {
+    collections.points.find({}).sort({ _id: -1 }).limit(3000).toArray(function(err, docs) {
       assert.equal(err, null);
-      socket.emit('positions', {
+      socket.emit("positions", {
         positions: docs
       });
-
     });
   });
-
 });
-
 
 app.use(function(req, res, next) {
   var data = "";
-  req.on('data', function(chunk) {
-    data += chunk}
-  )
-  req.on('end', function() {
+  req.on("data", function(chunk) {
+    data += chunk;
+  });
+  req.on("end", function() {
     req.rawBody = data;
     next();
-  })
+  });
 });
 
-app.use(express.logger('dev'));
+app.use(express.logger("dev"));
 
 // db.collection('points').ensureIndex([['geo', '2dsphere']], false, function (err, replies) {
 //   if (err) {
@@ -90,7 +83,6 @@ app.use(express.logger('dev'));
 //     console.log(err);
 //   }
 // });
-
 
 function transformHeader(data, result) {
   result.id = parseInt(data.bwiredtravel.travel.id);
@@ -118,7 +110,7 @@ function transformPoint(point, result) {
   result.rdist = parseFloat(point.rdist);
   result.ttime = parseFloat(point.ttime);
   result.geo = {
-    type: 'Point',
+    type: "Point",
     coordinates: [result.lon, result.lat]
   };
 
@@ -150,42 +142,39 @@ function transform(data, response) {
 }
 
 function sendLatestCoordinates() {
-  db.collection('points').find({}, {limit: 1, sort: {date: -1}}).toArray(function (err, items) {
+  db.collection("points").find({}, { limit: 1, sort: { date: -1 } }).toArray(function(err, items) {
     if (items.length >= 1) {
-      io.sockets.emit('location', {
+      io.sockets.emit("location", {
         lat: items[0].lat,
         lon: items[0].lon,
-        course: items[0].course,
+        course: items[0].course
       });
     }
   });
 }
 
-
-
-var PORT=process.env.PORT||3000;
+var PORT = process.env.PORT || 3000;
 server.listen(PORT);
 
-console.log('SERVER LISTENING ON ',PORT);
+console.log("SERVER LISTENING ON ", PORT);
 
-app.get('/', function(req, res) {
-  res.sendfile(__dirname + '/index.html');
+app.get("/", function(req, res) {
+  res.sendfile(__dirname + "/index.html");
 });
 
-app.post('/api/gps', function(req, res) {
+app.post("/api/gps", function(req, res) {
   var response = {};
-  parser.parseString(req.rawBody, function (err, result) {
+  parser.parseString(req.rawBody, function(err, result) {
+    console.log("Incoming: ", result);
 
-    console.log('Incoming: ',result);
-
-    if (result.bwiredtravel.password!=process.env.ADMIN_PASS){
-      console.log('POST WITH WRONG PASS');
+    if (result.bwiredtravel.password != process.env.ADMIN_PASS) {
+      console.log("POST WITH WRONG PASS");
       return false;
     }
 
-    db.collection('points').insert(transform(result, response), function(err) {
+    db.collection("points").insert(transform(result, response), function(err) {
       if (err) {
-        return console.log('insert error', err);
+        return console.log("insert error", err);
       }
       sendLatestCoordinates();
     });
@@ -194,31 +183,32 @@ app.post('/api/gps', function(req, res) {
   });
 });
 
-var instacache=null;
-var instatime=0;
+var instacache = null;
+var instatime = 0;
 
 //Make instagram proxy so we dont have to expose API key // Oops, repo is public anyway...
-app.get('/instagram', cors(), function(req, res) {
+app.get("/instagram", cors(), function(req, res) {
   // res.sendfile(__dirname + '/index.html');
-  var curtime=new Date().getTime();
-  var diff=1000*60*5; //5 min
-  if (instatime > (curtime - diff) && instacache!=null){
+  var curtime = new Date().getTime();
+  var diff = 1000 * 60 * 5; //5 min
+  if (instatime > curtime - diff && instacache != null) {
     res.send(instacache);
   } else {
-    request.get('https://api.instagram.com/v1/users/self/media/recent/?access_token=32227036.f3c234e.e692f6979657454c9b75f99aeb6fbda8&', function (error, response, body) {
-      if (error){
-        console.log('Insta Error:',error);
-        return;
+    request.get(
+      "https://api.instagram.com/v1/users/self/media/recent/?access_token=32227036.f3c234e.e692f6979657454c9b75f99aeb6fbda8&",
+      function(error, response, body) {
+        if (error) {
+          console.log("Insta Error:", error);
+          return;
+        }
+        instacache = body;
+        instatime = curtime;
+        res.send(instacache);
       }
-      instacache=body;
-      instatime=curtime;
-      res.send(instacache);
-    });
-
+    );
   }
   // request.get('https://api.instagram.com/v1/users/self/media/recent/?access_token=32227036.f3c234e.e692f6979657454c9b75f99aeb6fbda8&').pipe(res)
 });
-
 
 // http.createServer(function (req, resp) {
 //   if (req.url === '/doodle.png') {
@@ -230,6 +220,6 @@ app.get('/instagram', cors(), function(req, res) {
 //   }
 // })
 
-io.sockets.on('connection', function (socket) {
+io.sockets.on("connection", function(socket) {
   sendLatestCoordinates();
 });
