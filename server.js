@@ -186,8 +186,8 @@ app.post("/api/gps", function(req, res) {
       console.log("POINT LEN:", point.length);
       console.log("POINTs:", JSON.stringify(point));
       //Find latest point (highest ID)
-      var lastpoint = _.max(points, function(point) {
-        return point.ttime;
+      var lastpoint = _.max(point, function(thispoint) {
+        return thispoint.ttime;
       });
 
       if (lastpoint) {
