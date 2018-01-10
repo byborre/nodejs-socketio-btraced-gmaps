@@ -8,6 +8,7 @@ var request = require("request");
 var server = require("http").createServer(app);
 var io = require("socket.io").listen(server);
 var dotenv = require("dotenv");
+var _ = require("underscore");
 
 io.set("log level", 1);
 
@@ -184,16 +185,19 @@ app.post("/api/gps", function(req, res) {
       }
       console.log("POINT LEN:", point.length);
       console.log("POINTs:", JSON.stringify(point));
-      /*
-      if (items.length >= 1) {
-        io.sockets.emit("location", {
-          user: items[0].user,
-          lat: items[0].lat,
-          lon: items[0].lon,
-          course: items[0].course
-        });
-      }*/
+      //Find latest point (highest ID)
+      var lastpoint = _.max(points, function(point) {
+        return point.ttime;
+      });
 
+      if (lastpoint) {
+        io.sockets.emit("location", {
+          user: lastpoint.user,
+          lat: lastpoint.lat,
+          lon: lastpoint.lon,
+          course: lastpoint.course
+        });
+      }
       // sendLatestCoordinates();
     });
     // console.log(response);
