@@ -174,11 +174,24 @@ app.post("/api/gps", function(req, res) {
       return false;
     }
 
-    db.collection("points").insert(transform(result, response), function(err) {
+    var point = transform(result, response);
+
+    db.collection("points").insert(point, function(err) {
       if (err) {
         return console.log("insert error", err);
       }
-      sendLatestCoordinates();
+      console.log("POINT LEN:", point.length);
+      /*
+      if (items.length >= 1) {
+        io.sockets.emit("location", {
+          user: items[0].user,
+          lat: items[0].lat,
+          lon: items[0].lon,
+          course: items[0].course
+        });
+      }*/
+
+      // sendLatestCoordinates();
     });
     // console.log(response);
     res.send(JSON.stringify(response));
