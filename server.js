@@ -9,6 +9,8 @@ var server = require("http").createServer(app);
 var io = require("socket.io").listen(server);
 var dotenv = require("dotenv");
 
+io.set("log level", 1);
+
 var cors = require("cors");
 
 // app.use(cors());//enable cors
@@ -181,6 +183,7 @@ app.post("/api/gps", function(req, res) {
         return console.log("insert error", err);
       }
       console.log("POINT LEN:", point.length);
+      console.log("POINTs:", JSON.stringify(point));
       /*
       if (items.length >= 1) {
         io.sockets.emit("location", {
