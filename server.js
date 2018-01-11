@@ -177,16 +177,16 @@ app.post("/api/gps", function(req, res) {
       return false;
     }
 
-    var point = transform(result, response);
+    var points = transform(result, response);
 
-    db.collection("points").insert(point, function(err) {
+    db.collection("points").insert(points, function(err) {
       if (err) {
         return console.log("insert error", err);
       }
-      console.log("POINT LEN:", point.length);
-      console.log("POINTs:", JSON.stringify(point));
+      console.log("POINTs LEN:", points.length);
+      // console.log("POINTs:", JSON.stringify(point));
       //Find latest point (highest ID)
-      var lastpoint = _.max(point, function(thispoint) {
+      var lastpoint = _.max(points, function(thispoint) {
         return thispoint.ttime;
       });
 
