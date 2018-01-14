@@ -21,6 +21,8 @@ var MongoClient = require("mongodb").MongoClient,
 
 dotenv.load(); //use env files
 
+var devices = {};
+
 // console.log('AUTH:',process.env.MONGODB_URI);
 
 // var db = mongo.db(process.env.MONGODB_URI, {safe: true});
@@ -154,6 +156,8 @@ function sendLatestCoordinates() {
         lon: items[0].lon,
         course: items[0].course
       });
+      //Broadvast all cached locs
+      io.sockets.emit("locs", devices);
     }
   });
 }
@@ -191,12 +195,15 @@ app.post("/api/gps", function(req, res) {
       });
 
       if (lastpoint) {
-        io.sockets.emit("location", {
+        var curpoint = {
           user: lastpoint.user,
           lat: lastpoint.lat,
           lon: lastpoint.lon,
           course: lastpoint.course
-        });
+        };
+        devices[lastpoint.user] = curpoint;
+
+        io.sockets.emit("location", curpoint);
       }
       // sendLatestCoordinates();
     });
