@@ -10,6 +10,8 @@ var io = require("socket.io").listen(server);
 var dotenv = require("dotenv");
 var _ = require("underscore");
 
+const models = require("./models");
+
 io.set("log level", 1);
 
 var cors = require("cors");
@@ -30,7 +32,9 @@ var devices = {};
 
 var db;
 
-MongoClient.connect(process.env.MONGODB_URI, function(err, thisdb) {
+var DBURL = process.env.MONGODB_URI || "";
+
+MongoClient.connect(DBURL, function(err, thisdb) {
   assert.equal(null, err);
   console.log("Connected correctly to mongo DB server");
 
@@ -202,6 +206,11 @@ app.post("/api/gps", function(req, res) {
           course: lastpoint.course
         };
         devices[lastpoint.user] = curpoint;
+
+        models.GPS.create(curpoint, {}).then(dbres => {
+          // res.redirect('/dooproepen')
+          // res.redirect("/admin/oproepen");
+        });
 
         io.sockets.emit("location", curpoint);
       }

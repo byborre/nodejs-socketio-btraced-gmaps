@@ -10,7 +10,9 @@
     "dotenv": "^4.0.0",
     "express": "^3.4.8",
     "mongodb": "^2.2.20",
+    "mysql2": "^1.5.1",
     "request": "^2.79.0",
+    "sequelize": "^4.31.2",
     "socket.io": "^0.9.17",
     "underscore": "^1.8.3",
     "xml2js": "^0.2.8"
