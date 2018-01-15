@@ -59,12 +59,14 @@ MongoClient.connect(DBURL, function(err, thisdb) {
 
   io.on("connection", function(socket) {
     //Send on connect
+    /*
     collections.points.find({}).sort({ _id: -1 }).limit(3000).toArray(function(err, docs) {
       assert.equal(err, null);
       socket.emit("positions", {
         positions: docs
       });
     });
+    */
   });
 });
 
