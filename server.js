@@ -180,7 +180,8 @@ app.get("/", function(req, res) {
 app.post("/api/gps", function(req, res) {
   var response = {};
   parser.parseString(req.rawBody, function(err, result) {
-    console.log("Incoming: ", JSON.stringify(result));
+    console.log("Incomming:");
+    console.log(JSON.stringify(result));
 
     if (result.bwiredtravel.password != process.env.ADMIN_PASS) {
       console.log("POST WITH WRONG PASS");
