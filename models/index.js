@@ -7,7 +7,7 @@ var env = process.env.NODE_ENV || "development";
 //use sequelize without any operators aliases
 var DBURL = process.env.JAWSDB_MARIA_URL || "mysql://root:@localhost:3306/trackparis";
 
-var sequelize = new Sequelize(DBURL, { operatorsAliases: false });
+var sequelize = new Sequelize(DBURL, { operatorsAliases: false, timezone: "Europe/Amsterdam" });
 var db = {};
 
 fs
