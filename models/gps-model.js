@@ -20,7 +20,7 @@ module.exports = function(sequelize, DataTypes) {
       },
 
       course: {
-        type: DataTypes.TINYINT,
+        type: DataTypes.INTEGER,
         allowNull: true
       }
     },
