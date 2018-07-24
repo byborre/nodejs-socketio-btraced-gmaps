@@ -34,6 +34,8 @@ var db;
 
 var DBURL = process.env.MONGODB_URI || "";
 
+console.log("DB URL:", DBURL);
+
 MongoClient.connect(DBURL, function(err, thisdb) {
   assert.equal(null, err);
   console.log("Connected correctly to mongo DB server");
@@ -154,18 +156,21 @@ function transform(data, response) {
 }
 
 function sendLatestCoordinates() {
-  db.collection("points").find({ user: "byborre1" }, { limit: 1, sort: { date: -1 } }).toArray(function(err, items) {
-    if (items.length >= 1) {
-      io.sockets.emit("location", {
-        user: items[0].user,
-        lat: items[0].lat,
-        lon: items[0].lon,
-        course: items[0].course
-      });
-      //Broadvast all cached locs
-      io.sockets.emit("locs", devices);
-    }
-  });
+  db
+    .collection("points")
+    .find({ user: "byborre1" }, { limit: 1, sort: { date: -1 } })
+    .toArray(function(err, items) {
+      if (items.length >= 1) {
+        io.sockets.emit("location", {
+          user: items[0].user,
+          lat: items[0].lat,
+          lon: items[0].lon,
+          course: items[0].course
+        });
+        //Broadvast all cached locs
+        io.sockets.emit("locs", devices);
+      }
+    });
 }
 
 var PORT = process.env.PORT || 3000;
@@ -249,6 +254,61 @@ app.get("/instagram", cors(), function(req, res) {
     );
   }
   // request.get('https://api.instagram.com/v1/users/self/media/recent/?access_token=32227036.f3c234e.e692f6979657454c9b75f99aeb6fbda8&').pipe(res)
+});
+
+app.get("/geojson/:user", function(req, res) {
+  // res.send(req.params.user);
+  // return;
+  models.GPS.findAll({
+    where: {
+      user: req.params.user
+      // ReservationId: { [Sequelize.Op.in]: ReservationIds } // IN [1, 2]}
+    },
+    raw: true
+    // order: [["user", "ASC"]] //get latest if card is reused / re checked in
+  }).then(Points => {
+    if (!Points) {
+      //No card
+      return;
+      res.send("Err");
+    }
+
+    // console.log("Got points", Points.length);
+
+    var tracks = {};
+
+    var features = [];
+
+    _.each(Points, function(point) {
+      if (!tracks[point.user]) {
+        tracks[point.user] = [];
+      }
+      tracks[point.user].push([point.lon, point.lat]);
+      console.log("point", point);
+    });
+
+    console.log("Got tracks", tracks.length);
+
+    _.each(tracks, function(track, user) {
+      features.push({
+        type: "Feature",
+        geometry: {
+          type: "LineString",
+          coordinates: track
+        },
+        properties: {
+          name: "Route " + user
+        }
+      });
+    });
+
+    var out = {
+      type: "FeatureCollection",
+      features: features
+    };
+
+    res.send(out);
+  });
 });
 
 // http.createServer(function (req, resp) {
