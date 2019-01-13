@@ -158,7 +158,7 @@ function transform(data, response) {
 function sendLatestCoordinates() {
   db
     .collection("points")
-    .find({ user: "byborre1" }, { limit: 1, sort: { date: -1 } })
+    .find({ user: "byborre2" }, { limit: 1, sort: { date: -1 } })
     .toArray(function(err, items) {
       if (items.length >= 1) {
         io.sockets.emit("location", {
