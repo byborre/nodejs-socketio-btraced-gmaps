@@ -44,16 +44,16 @@ MongoClient.connect(DBURL, function(err, thisdb) {
 
   var collections = {
     // 'pings': db.collection('pings')
-    points: db.collection("points")
+    points: db.collection("points_jan19")
   };
 
-  db.collection("points").ensureIndex([["geo", "2dsphere"]], false, function(err, replies) {
+  db.collection("points_jan19").ensureIndex([["geo", "2dsphere"]], false, function(err, replies) {
     if (err) {
       console.log(err);
     }
   });
 
-  db.collection("points").ensureIndex("date", false, function(err, replies) {
+  db.collection("points_jan19").ensureIndex("date", false, function(err, replies) {
     if (err) {
       console.log(err);
     }
